@@ -9,6 +9,8 @@ class Player
 {
     constructor()
     {
+        this.position = {x:0, y:0};
+        this.clickPosition = {x: canvas.width / 2, y: 0};
         this.velocity = {x:0, y:0};
         this.rotation = 0;
         this.opacity = 1;
@@ -156,11 +158,12 @@ class Grid
     {
         this.position = {x: 0, y: 0};
         this.velocity = {x: 3, y: 0};
+        this.spawnNums = {x: 3, y: 2};
 
         this.invaders = [];
 
-        const columns = Math.floor(Math.random() * 10 + 5);
-        const rows = Math.floor(Math.random() * 5 + 2);
+        const columns = Math.floor(Math.random() * this.spawnNums.x + this.spawnNums.y);
+        const rows = Math.floor(Math.random() * this.spawnNums.x + this.spawnNums.y);
 
         this.width = columns * 30;
 
@@ -196,6 +199,7 @@ const keys = {a: {pressed:false}, d: {pressed:false}, space: {pressed:false}}
 
 let frames = 0;
 let randomInterval = Math.floor((Math.random() * 3000) + 500);
+let isMoble = false;
 let game = {over: false, active: true};
 let score = 0;
 
@@ -206,6 +210,7 @@ function animate()
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);
     player.update();
+    player.position.x  = player.clickPosition.x - player.width / 2;
     invaderProjectiles.forEach((invaderProjectile, index) => 
     {
         if (invaderProjectile.position.y + invaderProjectile. height >= canvas.height)
@@ -319,6 +324,27 @@ function animate()
 
 animate();
 
+addEventListener("touchstart", (event) =>
+{
+    console.log(event);
+    if (event)
+    {
+        isMoble = true;
+    }
+
+})
+
+addEventListener("click", (event) =>
+{
+    if (game.over) return;
+
+    if(isMoble)
+    {
+        player.clickPosition.x = event.clientX;
+        projectiles.push(new Projectile({position: {x: player.position.x + player.width / 2, y: player.position.y}, velocity: {x: 0, y: -10}}))
+    }
+})
+
 window.addEventListener("keydown", ({key}) => 
 {
     if (game.over) return;
@@ -330,7 +356,6 @@ window.addEventListener("keydown", ({key}) =>
         case 'd': keys.d.pressed = true;
         break;
         case ' ': projectiles.push(new Projectile({position: {x: player.position.x + player.width / 2, y: player.position.y}, velocity: {x: 0, y: -10}}));
-        console.log(projectiles);
         break;
     }
 })
