@@ -199,7 +199,7 @@ const keys = {a: {pressed:false}, d: {pressed:false}, space: {pressed:false}}
 
 let frames = 0;
 let randomInterval = Math.floor((Math.random() * 3000) + 500);
-let isMoble = false;
+let isMobile = false;
 let game = {over: false, active: true};
 let score = 0;
 
@@ -210,7 +210,11 @@ function animate()
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);
     player.update();
-    player.position.x  = player.clickPosition.x - player.width / 2;
+
+    if(isMobile)
+    {
+        player.position.x  = player.clickPosition.x - player.width / 2;
+    }
     invaderProjectiles.forEach((invaderProjectile, index) => 
     {
         if (invaderProjectile.position.y + invaderProjectile. height >= canvas.height)
@@ -329,7 +333,7 @@ addEventListener("touchstart", (event) =>
     console.log(event);
     if (event)
     {
-        isMoble = true;
+        isMobile = true;
     }
 
 })
@@ -338,7 +342,7 @@ addEventListener("click", (event) =>
 {
     if (game.over) return;
 
-    if(isMoble)
+    if(isMobile)
     {
         player.clickPosition.x = event.clientX;
         projectiles.push(new Projectile({position: {x: player.position.x + player.width / 2, y: player.position.y}, velocity: {x: 0, y: -10}}))
