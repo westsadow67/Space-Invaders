@@ -292,6 +292,7 @@ function animate()
                                 else
                                 {
                                     grids.splice(gridIndex, 1);
+                                    grids.push(new Grid());
                                 }
                             }
                         }, 0)
